@@ -61,6 +61,36 @@ function calcularBresenham(x0, y0, x1, y1) {
     return puntos;
 }
 
+function dibujarEscalasDinamicas(ctx, scale, max, w, h) {
+    const OFFSET = 40;
+    const baseEjeY = h - OFFSET;
+
+    ctx.strokeStyle = "#e0e0e0";
+    ctx.fillStyle = "#888";
+    ctx.font = "10px Arial";
+    ctx.beginPath();
+
+    for (let i = 0; i <= max; i++) {
+        let pos = i * scale + OFFSET;
+        
+        // Eje X
+        ctx.fillText(i, pos - 5, h - 5);
+        ctx.moveTo(pos, 0); ctx.lineTo(pos, baseEjeY);
+        
+        // Eje Y
+        ctx.fillText(i, 5, baseEjeY - (i * scale) + 5);
+        ctx.moveTo(OFFSET, baseEjeY - (i * scale)); ctx.lineTo(w, baseEjeY - (i * scale));
+    }
+    ctx.stroke();
+
+    // Ejes principales negros
+    ctx.beginPath();
+    ctx.strokeStyle = "#000";
+    ctx.moveTo(OFFSET, 0); ctx.lineTo(OFFSET, baseEjeY); // Vertical
+    ctx.lineTo(w, baseEjeY); // Horizontal
+    ctx.stroke();
+}
+
 function ejecutar() {
     const canvas = document.getElementById('canvasBresenham');
     const ctx = canvas.getContext('2d');
@@ -77,11 +107,24 @@ function ejecutar() {
     const x1 = parseInt(document.getElementById('x1').value);
     const y1 = parseInt(document.getElementById('y1').value);
 
-    const pasos = calcularBresenham(x0, y0, x1, y1);
-
     
     ctx.strokeStyle = "blue";
     ctx.beginPath();
+
+    const maxCoord = Math.max(x0, x1, y0, y1, 10);
+    let SCALE = 30; 
+    if (maxCoord > 20) SCALE = 20;
+    if (maxCoord > 50) SCALE = 10;
+    if (maxCoord > 100) SCALE = 5;
+
+    canvas.width = (maxCoord * SCALE) + OFFSET + 20;
+    canvas.height = (maxCoord * SCALE) + OFFSET + 20;
+
+    const altoCanvas = canvas.height - OFFSET;
+
+    dibujarEscalasDinamicas(ctx, SCALE, maxCoord, canvas.width, canvas.height);
+    
+    const pasos = calcularBresenham(x0, y0, x1, y1);
 
     for (let i = 0; i < pasos.length; i++) {
         let puntoActual = pasos[i];

@@ -99,6 +99,47 @@ function calcularBresenham(x0, y0, x1, y1) {
     return puntos;
 }
 
+function ejecutar() {
+    const canvas = document.getElementById('canvasBresenham');
+    const ctx = canvas.getContext('2d');
+    const SCALE = 30; // Tamaño de cada celda
+    const OFFSET = 40;
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.beginPath();
+    dibujarEscalas(ctx, SCALE);
+
+    const x0 = parseInt(document.getElementById('x0').value);
+    const y0 = parseInt(document.getElementById('y0').value);
+    const x1 = parseInt(document.getElementById('x1').value);
+    const y1 = parseInt(document.getElementById('y1').value);
+
+    const historial = calcularBresenham(x0, y0, x1, y1);
+
+    // Dibujar línea y generar tabla simultáneamente
+    let tablaHtml = '<table><tr><th>Paso</th><th>X</th><th>Y</th><th>pk</th></tr>';
+    ctx.strokeStyle = "blue";
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+
+    historial.forEach((p, i) => {
+        let drawX = p.x * SCALE + OFFSET;
+        let drawY = 480 - (p.y * SCALE);
+        
+        if (i === 0) ctx.moveTo(drawX, drawY);
+        else ctx.lineTo(drawX, drawY);
+        
+        ctx.fillRect(drawX - 2, drawY - 2, 4, 4); // Punto
+        tablaHtml += `<tr><td>${i}</td><td>${p.x}</td><td>${p.y}</td><td>${p.pk}</td></tr>`;
+    });
+    
+    ctx.stroke();
+    document.getElementById('tablaResultado').innerHTML = tablaHtml + '</table>';
+}
+
+window.onload = ejecutar;
+
+
 </script>
 
 </html>

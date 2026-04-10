@@ -1,12 +1,14 @@
-/*Basandose en el algoritmo siguiente, crear una aplicacion en HTML/JS en donde se trace una linea referida por las coordenadas (x0,y0) y (y0,y1) definidas por el usuario desde
+/*
+Basandose en el algoritmo siguiente, crear una aplicacion en HTML/JS en donde se trace una linea referida por las coordenadas (x0,y0) y (y0,y1) definidas por el usuario desde
 cuadros de texto en HTML. Paralelamente debe generarse y presentarse una tabla en donde se presenten paso a paso los valores para cada una de las variables involucradas en el
-proceso. El canvas debe mostar en los costados izquierdo e inferior las marcas de escala numérica.  
+proceso. El canvas debe mostar en los costados izquierdo e inferior las marcas de escala numérica.
 
 Deben incluirse métodos nuevos ya sea que se requieran o se obtengan ajustando código ya exxistente. Éstos deben documentarse en forma de comentarios tal como se muestra en
 el ejemplo de la función bresenham adjunta.
 
-<b>IMPORTANTE: Debe desarrollar el trabajo paso a paso, realizando commits por cada unos cuantos ajustes (explicando clara y brevemente cada uno de ellos). Saltos abruptos en los
-cambios invalidarán el trabajo con notas de cero.</b>*/
+IMPORTANTE: Debe desarrollar el trabajo paso a paso, realizando commits por cada unos cuantos ajustes (explicando clara y brevemente cada uno de ellos). Saltos abruptos en los
+cambios invalidarán el trabajo con notas de cero.
+*/
 
 
 <!DOCTYPE html>
@@ -51,4 +53,27 @@ cambios invalidarán el trabajo con notas de cero.</b>*/
         <div id="tablaResultado"></div>
     </div>
 </body>
+
+<script>
+function dibujarEscalas(ctx, scale) {
+    
+    ctx.strokeStyle = "#e0e0e0";
+    ctx.fillStyle = "#888";
+    ctx.font = "10px Arial";
+    
+    //Dibujamos lineas y números 
+
+    for (let i = 0; i < 20; i++) {
+        let pos = i * scale + 40;
+        // Para el eje X
+        ctx.fillText(i, pos, 495);
+        ctx.moveTo(pos, 0); ctx.lineTo(pos, 480);
+        // Para el eje Y
+        ctx.fillText(i, 5, 480 - (i * scale));
+        ctx.moveTo(40, 480 - (i * scale)); ctx.lineTo(600, 480 - (i * scale));
+    }
+    ctx.stroke();
+}
+</script>
+
 </html>

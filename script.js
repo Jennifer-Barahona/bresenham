@@ -31,6 +31,11 @@ function dibujarEscalas(ctx, scale) {
     ctx.stroke();
 }
 
+if (isNaN(x0) || isNaN(y0) || isNaN(x1) || isNaN(y1)) {
+    alert("Por favor, ingresa números válidos en todos los campos.");
+    return;
+}
+
 
 function calcularBresenham(x0, y0, x1, y1) {
     let puntos = [];

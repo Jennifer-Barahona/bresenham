@@ -56,7 +56,7 @@ cambios invalidarán el trabajo con notas de cero.
 
 <script>
 function dibujarEscalas(ctx, scale) {
-    
+
     ctx.strokeStyle = "#e0e0e0";
     ctx.fillStyle = "#888";
     ctx.font = "10px Arial";
@@ -74,6 +74,31 @@ function dibujarEscalas(ctx, scale) {
     }
     ctx.stroke();
 }
+
+
+function calcularBresenham(x0, y0, x1, y1) {
+    let puntos = [];
+    let dx = Math.abs(x1 - x0);
+    let dy = Math.abs(y1 - y0);
+    let sx = (x0 < x1) ? 1 : -1;
+    let sy = (y0 < y1) ? 1 : -1;
+    let err = dx - dy;
+
+    let x = x0;
+    let y = y0;
+
+    while (true) {
+        // Guardamos el estado de las variables en cada paso
+        puntos.push({ x, y, pk: err });
+        if (x === x1 && y === y1) break;
+        
+        let e2 = 2 * err;
+        if (e2 > -dy) { err -= dy; x += sx; }
+        if (e2 < dx) { err += dx; y += sy; }
+    }
+    return puntos;
+}
+
 </script>
 
 </html>

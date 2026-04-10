@@ -61,7 +61,8 @@ function ejecutar() {
     const SCALE = 30; // Tamaño de cada celda
     const OFFSET = 40;
 
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.clearRect(0, 0, canvas.width, canvas.height); //Esto es para limpiar el canvas
+
     ctx.beginPath();
     dibujarEscalas(ctx, SCALE);
 
@@ -70,27 +71,50 @@ function ejecutar() {
     const x1 = parseInt(document.getElementById('x1').value);
     const y1 = parseInt(document.getElementById('y1').value);
 
-    const historial = calcularBresenham(x0, y0, x1, y1);
+    const pasos = calcularBresenham(x0, y0, x1, y1);
 
-    // Dibujar línea y generar tabla simultáneamente
-    let tablaHtml = '<table><tr><th>Paso</th><th>X</th><th>Y</th><th>pk</th></tr>';
+    
     ctx.strokeStyle = "blue";
-    ctx.lineWidth = 2;
     ctx.beginPath();
 
-    historial.forEach((p, i) => {
-        let drawX = p.x * SCALE + OFFSET;
-        let drawY = 480 - (p.y * SCALE);
+    for (let i = 0; i < pasos.length; i++) {
+        let puntoActual = pasos[i];
         
-        if (i === 0) ctx.moveTo(drawX, drawY);
-        else ctx.lineTo(drawX, drawY);
+        // Pasar a  pixeles del canvas
+        let xCanvas = puntoActual.x * SCALE + OFFSET;
+        let yCanvas = 480 - (puntoActual.y * SCALE);
+
+        if (i === 0) {
+            ctx.moveTo(xCanvas, yCanvas); // Empezar en el primer punto
+        } else {
+            ctx.lineTo(xCanvas, yCanvas); // Trazar hacia el siguiente
+        }
         
-        ctx.fillRect(drawX - 2, drawY - 2, 4, 4); // Punto
-        tablaHtml += `<tr><td>${i}</td><td>${p.x}</td><td>${p.y}</td><td>${p.pk}</td></tr>`;
-    });
-    
+        // Dibujar un puntito rojo en cada coordenada
+        ctx.fillStyle = "red";
+        ctx.fillRect(xCanvas - 2, yCanvas - 2, 4, 4);
+    }
     ctx.stroke();
-    document.getElementById('tablaResultado').innerHTML = tablaHtml + '</table>';
+
+    // Creamos la tabla
+    let contenidoTabla = "<table>";
+    contenidoTabla += "<tr><th>Paso</th><th>X</th><th>Y</th><th>Error</th></tr>";
+
+    for (let i = 0; i < pasos.length; i++) {
+        let p = pasos[i];
+        // Vamos sumando filas a la tabla una por una
+        contenidoTabla += "<tr>";
+        contenidoTabla += "<td>" + i + "</td>";
+        contenidoTabla += "<td>" + p.x + "</td>";
+        contenidoTabla += "<td>" + p.y + "</td>";
+        contenidoTabla += "<td>" + p.pk + "</td>";
+        contenidoTabla += "</tr>";
+    }
+
+    contenidoTabla += "</table>";
+
+    // Poner todo el texto de la tabla
+    document.getElementById('tablaResultado').innerHTML = contenidoTabla;
 }
 
 window.onload = ejecutar;

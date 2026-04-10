@@ -41,6 +41,7 @@ cambios invalidarán el trabajo con notas de cero.
         #tablaResultado th {
             background-color: #f2f2f2;
         }
+</style>
 </head>
 <body>
     <div class="controls">

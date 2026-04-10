@@ -94,76 +94,64 @@ function dibujarEscalasDinamicas(ctx, scale, max, w, h) {
 function ejecutar() {
     const canvas = document.getElementById('canvasBresenham');
     const ctx = canvas.getContext('2d');
-    const SCALE = 30; // Tamaño de cada celda
     const OFFSET = 40;
 
-    ctx.clearRect(0, 0, canvas.width, canvas.height); //Esto es para limpiar el canvas
-
-    ctx.beginPath();
-    dibujarEscalas(ctx, SCALE);
-
+    
     const x0 = parseInt(document.getElementById('x0').value);
     const y0 = parseInt(document.getElementById('y0').value);
     const x1 = parseInt(document.getElementById('x1').value);
     const y1 = parseInt(document.getElementById('y1').value);
 
     
-    ctx.strokeStyle = "blue";
-    ctx.beginPath();
-
     const maxCoord = Math.max(x0, x1, y0, y1, 10);
-    let SCALE = 30; 
-    if (maxCoord > 20) SCALE = 20;
-    if (maxCoord > 50) SCALE = 10;
-    if (maxCoord > 100) SCALE = 5;
+    let scaleActual = 30; 
+    if (maxCoord > 20) scaleActual = 20;
+    if (maxCoord > 50) scaleActual = 10;
+    if (maxCoord > 100) scaleActual = 5;
 
-    canvas.width = (maxCoord * SCALE) + OFFSET + 20;
-    canvas.height = (maxCoord * SCALE) + OFFSET + 20;
+    //ajustar tamaño del lienzo antes de dibujar
+    canvas.width = (maxCoord * scaleActual) + OFFSET + 20;
+    canvas.height = (maxCoord * scaleActual) + OFFSET + 20;
+    const altoCanvasInterno = canvas.height - OFFSET;
 
-    const altoCanvas = canvas.height - OFFSET;
+   
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    dibujarEscalasDinamicas(ctx, scaleActual, maxCoord, canvas.width, canvas.height);
 
-    dibujarEscalasDinamicas(ctx, SCALE, maxCoord, canvas.width, canvas.height);
-    
+   
     const pasos = calcularBresenham(x0, y0, x1, y1);
 
+    //Se dibuja la linea
+    ctx.strokeStyle = "blue";
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+
     for (let i = 0; i < pasos.length; i++) {
-        let puntoActual = pasos[i];
+        let p = pasos[i];
         
-        // Pasar a  pixeles del canvas
-        let xCanvas = puntoActual.x * SCALE + OFFSET;
-        let yCanvas = 480 - (puntoActual.y * SCALE);
+        
+        let xCanvas = p.x * scaleActual + OFFSET;
+        let yCanvas = altoCanvasInterno - (p.y * scaleActual);
 
         if (i === 0) {
-            ctx.moveTo(xCanvas, yCanvas); // Empezar en el primer punto
+            ctx.moveTo(xCanvas, yCanvas);
         } else {
-            ctx.lineTo(xCanvas, yCanvas); // Trazar hacia el siguiente
+            ctx.lineTo(xCanvas, yCanvas);
         }
         
-        // Dibujar un puntito rojo en cada coordenada
         ctx.fillStyle = "red";
         ctx.fillRect(xCanvas - 2, yCanvas - 2, 4, 4);
     }
     ctx.stroke();
 
-    // Creamos la tabla
-    let contenidoTabla = "<table>";
-    contenidoTabla += "<tr><th>Paso</th><th>X</th><th>Y</th><th>Error</th></tr>";
-
+    //Esto es para generar la tabla
+    
+    let contenidoTabla = "<table><tr><th>Paso</th><th>X</th><th>Y</th><th>Error</th></tr>";
     for (let i = 0; i < pasos.length; i++) {
         let p = pasos[i];
-        // Vamos sumando filas a la tabla una por una
-        contenidoTabla += "<tr>";
-        contenidoTabla += "<td>" + i + "</td>";
-        contenidoTabla += "<td>" + p.x + "</td>";
-        contenidoTabla += "<td>" + p.y + "</td>";
-        contenidoTabla += "<td>" + p.pk + "</td>";
-        contenidoTabla += "</tr>";
+        contenidoTabla += `<tr><td>${i}</td><td>${p.x}</td><td>${p.y}</td><td>${p.pk}</td></tr>`;
     }
-
-    contenidoTabla += "</table>";
-
-    // Poner todo el texto de la tabla
-    document.getElementById('tablaResultado').innerHTML = contenidoTabla;
+    document.getElementById('tablaResultado').innerHTML = contenidoTabla + "</table>";
 }
 
 window.onload = ejecutar;

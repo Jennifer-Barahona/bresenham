@@ -31,13 +31,9 @@ function dibujarEscalas(ctx, scale) {
     ctx.stroke();
 }
 
-if (isNaN(x0) || isNaN(y0) || isNaN(x1) || isNaN(y1)) {
-    alert("Por favor, ingresa números válidos en todos los campos.");
-    return;
-}
-
 
 function calcularBresenham(x0, y0, x1, y1) {
+    
     let puntos = [];
     let dx = Math.abs(x1 - x0);
     let dy = Math.abs(y1 - y0);
@@ -47,6 +43,11 @@ function calcularBresenham(x0, y0, x1, y1) {
 
     let x = x0;
     let y = y0;
+
+    if (isNaN(x0) || isNaN(y0) || isNaN(x1) || isNaN(y1)) {
+        alert("¡Cuidado! Debes completar todos los cuadros con números antes de dibujar.");
+        return; // Detiene la función aquí para que no de error más abajo
+    }
 
     while (true) {
         // Guardamos el estado de las variables en cada paso
